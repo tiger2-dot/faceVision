@@ -19,6 +19,8 @@ mainFace = face_recognition.face_encodings(face_image = myself)[0] #get encoding
 #use os to iterate throught all images and check in each image if main face exist
 path = os.getcwd()
 allImg = os.listdir(path)
+goodimg = []
+badimg = []
 for img in allImg:
 	(name,typ) = img.split('.')
 	if typ == 'jpg' or typ == 'png': #we do not want to try and open file that is not image
@@ -26,15 +28,20 @@ for img in allImg:
 			#check each img
 			imag = face_recognition.load_image_file(img) #load image
 			faces = face_recognition.face_encodings(face_image = imag) #encode all faces
-			dist = face_recognition.compare_faces(faces,mainFace,tolerance = 0.6) #calculate distances for each face
-			print (dist)
-			print (name)
+			isFace = face_recognition.compare_faces(faces,mainFace,tolerance = 0.6) #calculate if main face in each image
+			
+			if True in isFace: #if main face in image save it
+				goodimg.append(imag)
+			else: #if main face not in image then save name of image
+				badimg.append(name)
+
+
+for img in badimg:
+	print (img + " does not contain the main face!")
+
 
 
 '''
-for a in images:
-	print (a) 
-
 
 cv2.imshow('face',foundFace)
 cv2.waitKey(0)
